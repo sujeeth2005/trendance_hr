@@ -54,6 +54,8 @@ export const handlers = [
         );
       }
     }
+    const hasCycle = detectCycle(nodes, edges);
+    if (hasCycle) errors.push('Workflow contains a cycle (circular dependency detected)');
 
     const steps = nodes.map((n: any, i: number) => ({
       step: i + 1,
@@ -72,6 +74,33 @@ export const handlers = [
     });
   }),
 ];
+
+function detectCycle(nodes: any[], edges: any[]): boolean {
+  const adj: Record<string, string[]> = {};
+  nodes.forEach(n => (adj[n.id] = []));
+  edges.forEach(e => {
+    if (adj[e.source]) adj[e.source].push(e.target);
+  });
+
+  const visited = new Set<string>();
+  const inStack = new Set<string>();
+
+  function dfs(id: string): boolean {
+    visited.add(id);
+    inStack.add(id);
+    for (const neighbor of adj[id] ?? []) {
+      if (!visited.has(neighbor) && dfs(neighbor)) return true;
+      if (inStack.has(neighbor)) return true;
+    }
+    inStack.delete(id);
+    return false;
+  }
+
+  for (const node of nodes) {
+    if (!visited.has(node.id) && dfs(node.id)) return true;
+  }
+  return false;
+}
 
 function getMsg(data: any): string {
   if (!data) return 'Node executed';
