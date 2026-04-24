@@ -1,6 +1,14 @@
 # HR Workflow Designer
 
-A visual workflow designer for HR processes built with React, TypeScript, and React Flow.
+## Screenshots
+
+### Canvas Overview
+![Dashboard](public/assets/screenshot.png)
+
+### Node Types
+| Start | Task | Approval | Automated | End |
+|-------|------|----------|-----------|-----|
+| ![](public/assets/start.png) | ![](public/assets/task.png) | ![](public/assets/approval.png) | ![](public/assets/automated.png) | ![](public/assets/end.png) |
 
 ## Getting Started
 

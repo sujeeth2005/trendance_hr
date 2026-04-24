@@ -4,7 +4,7 @@ import ReactFlow, {
   Controls,
   MiniMap,
   ReactFlowProvider,
-  ReactFlowInstance,
+  useReactFlow,
   BackgroundVariant,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -56,11 +56,8 @@ function WorkflowCanvas() {
   } = useWorkflowStore();
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const rfInstanceRef = useRef<ReactFlowInstance | null>(null);
+  const { screenToFlowPosition } = useReactFlow();
 
-  const onInit = useCallback((instance: ReactFlowInstance) => {
-    rfInstanceRef.current = instance;
-  }, []);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -71,13 +68,9 @@ function WorkflowCanvas() {
     (e: React.DragEvent) => {
       e.preventDefault();
       const nodeType = e.dataTransfer.getData('application/reactflow-type') as NodeType;
-      if (!nodeType || !rfInstanceRef.current || !reactFlowWrapper.current) return;
+      if (!nodeType) return;
 
-      const bounds = reactFlowWrapper.current.getBoundingClientRect();
-      const position = rfInstanceRef.current.project({
-        x: e.clientX - bounds.left,
-        y: e.clientY - bounds.top,
-      });
+      const position = screenToFlowPosition({ x: e.clientX, y: e.clientY });
 
       const newNode: Node<WorkflowNodeData> = {
         id: `${nodeType}-${Date.now()}`,
@@ -125,7 +118,7 @@ function WorkflowCanvas() {
         onConnect={onConnect}
         onNodeClick={(_, node) => selectNode(node.id)}
         onPaneClick={onPaneClick}
-        onInit={onInit}
+        
         fitView
         deleteKeyCode={null}
         snapToGrid
