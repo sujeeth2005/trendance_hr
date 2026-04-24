@@ -1,10 +1,6 @@
 # HR Workflow 
 
 ## Screenshots
-
-### Canvas Overview
-![Dashboard](public/assets/screenshot.png)
-
 ### Node Types
 | Start | Task | Approval | Automated | End |
 |-------|------|----------|-----------|-----|
